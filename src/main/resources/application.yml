@@ -1,0 +1,39 @@
+# Spring properties
+spring:
+  application:
+    name: billing-service
+  cloud:
+    stream:
+      default: 
+        consumer:
+          useNativeEncoding: true
+      bindings:
+        bookingOrderInput:
+          destination: pf_pg-central-to-loja
+          content-type: application/*+avro
+          consumer:
+            configuration:
+              value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+              schema.registry.url: http://qqmtz2107.qq:8081
+          group: ${bookingConsumerGroup}
+      schema:
+        avro:
+          schema-locations: classpath*:avro/bookingOrder.avsc
+      kafka:
+        binder:
+          zkNodes: qqmtz2107.qq:2181
+          #brokers: qqmtz2107.qq:9092,qqmtz2106.qq:9092,qqmtz2105.qq:9092
+          brokers: qqmtz2105.qq:9092
+          consumer-properties:
+             value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+             schema.registry.url: http://qqmtz2107.qq:8081
+             specific.avro.reader: true
+
+bookingConsumerGroup: "booking-service"
+
+
+server:
+  port: 2229
+
+
+
